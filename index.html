@@ -345,7 +345,17 @@ async function gradeWithLLM(q,repAnswer){
       rep_answer:repAnswer
     }
   });
-  if(error)throw new Error(error.message||'Edge function call failed');
+  if(error){
+    // supabase-js wraps the response in error.context — try to extract the real message
+    let detail='';
+    try{
+      if(error.context&&typeof error.context.json==='function'){
+        const body=await error.context.json();
+        detail=' — '+JSON.stringify(body);
+      }
+    }catch{/* response wasn't JSON; ignore */}
+    throw new Error((error.message||'Edge function call failed')+detail);
+  }
   if(data&&data.error)throw new Error(data.error);
   return data; // { pass, score, feedback, missing_concepts }
 }
