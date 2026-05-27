@@ -131,7 +131,9 @@ const $=id=>document.getElementById(id);
 
 /* ========== SUPABASE ========== */
 const SUPABASE_URL='https://llnneakazvstvefdugiu.supabase.co';
-const SUPABASE_KEY='sb_publishable_8xBNfJkqe7xkiqV6yj_4qw_wfzuaxS2';
+// Legacy JWT-format anon key — required for Edge Function auth. The newer
+// sb_publishable_* format isn't accepted by the Edge Function platform yet.
+const SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxsbm5lYWthenZzdHZlZmR1Z2l1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MzIyMTQsImV4cCI6MjA5NTQwODIxNH0.55Jqyd5nzoxfznLsFj89AWZu1ZpjWkWM9b6XhOthli0';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 
 /* ========== QUESTION BANK ========== */
