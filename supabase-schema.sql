@@ -14,8 +14,11 @@
 
 -- ============================================================
 -- Extensions
+-- Supabase pre-installs pgcrypto in the `extensions` schema, so we
+-- reference its functions as `extensions.crypt(...)` / `extensions.gen_salt(...)`
+-- in the RPCs below (our function search_path is locked to `public`).
 -- ============================================================
-create extension if not exists pgcrypto;
+create extension if not exists pgcrypto with schema extensions;
 
 -- ============================================================
 -- reps — identity table. Email + 4-digit PIN auth.
@@ -107,7 +110,7 @@ begin
   values (
     lower(trim(p_email)),
     trim(p_name),
-    crypt(p_pin, gen_salt('bf', 10))
+    extensions.crypt(p_pin, extensions.gen_salt('bf', 10))
   )
   returning id into new_id;
 
@@ -128,7 +131,7 @@ begin
   select id into matched_id
   from reps
   where email = lower(trim(p_email))
-    and pin_hash = crypt(p_pin, pin_hash);
+    and pin_hash = extensions.crypt(p_pin, pin_hash);
 
   return matched_id;
 end;
